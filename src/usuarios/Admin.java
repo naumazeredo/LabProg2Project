@@ -23,14 +23,24 @@
  */
 package usuarios;
 
+import java.util.Date;
+
 /**
  *
  * @author Naum Azeredo <naumazeredo@gmail.com>
  */
 public class Admin extends Usuario {
+	private int id;
 	private String senha;
 
-	public void SetSenha(String senha) { this.senha = senha; }
+	public Admin(String local, Date data) {
+		super(local, data);
+	}
+
+	public int getId() { return this.id; }
+	public void setId(int id) { this.id = id; }
+
+	public void setSenha(String senha) { this.senha = senha; }
 
 	//public AdicionaEvento(Evento evento);
 	//public modificaEvento();

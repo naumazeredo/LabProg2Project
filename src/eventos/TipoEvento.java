@@ -28,12 +28,16 @@ package eventos;
  * @author Naum Azeredo <naumazeredo@gmail.com>
  */
 public class TipoEvento {
+	private int id;
 	private String nome;
-	private float duracao; // Em horas
+	private int duracao; // Em minutos 
+
+	public int getId() { return this.id; }
+	public void setId(int id) { this.id = id; }
 
 	public String GetNome() { return this.nome; }
 	public void SetNome(String nome) { this.nome = nome; }
 
-	public float GetDuracao() { return this.duracao; }
-	public void SetDuracao(float duracao) { this.duracao = duracao; }
+	public int GetDuracao() { return this.duracao; }
+	public void SetDuracao(int duracao) { this.duracao = duracao; }
 }

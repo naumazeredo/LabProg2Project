@@ -21,27 +21,26 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
  * THE SOFTWARE.
  */
-package eventos;
+package server;
+
+import java.sql.*;
 
 /**
  *
  * @author Naum Azeredo <naumazeredo@gmail.com>
  */
-public class Localizacao {
-	public enum Regiao {
-		Copacabana, Maracana, Deodoro, Barra
+public class FabricaConexoes {
+	static final String JDBC_DRIVER = "com.mysql.jdbc.Driver";
+	static final String DB_URL = "jdbc:mysql://localhost/labprog2";
+
+	static final String USER = "root";
+	static final String PASS = "";
+
+	public Connection getConnection() {
+		try {
+			return DriverManager.getConnection(DB_URL, USER, PASS);
+		} catch (SQLException e) {
+			throw new RuntimeException(e);
+		}
 	}
-
-	private int id;
-	private String local;
-	private Regiao regiao;
-
-	public int getId() { return this.id; }
-	public void setId(int id) { this.id = id; }
-
-	public String GetLocal() { return this.local; }
-	public void SetLocal(String local) { this.local = local; }
-
-	public Regiao GetRegiao() { return this.regiao; }
-	public void SetRegiao(Regiao regiao) { this.regiao = regiao; }
 }

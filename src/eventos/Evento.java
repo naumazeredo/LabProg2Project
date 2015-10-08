@@ -30,8 +30,21 @@ import java.util.Date;
  * @author Naum Azeredo <naumazeredo@gmail.com>
  */
 public class Evento {
-	private Localizacao local;
-	private TipoEvento tipoEvento;
+	private int id;
+	private int localId;
+	private int tipoId;
 
 	private Date data;
+
+	public int getId() { return this.id; }
+	public void setId(int id) { this.id = id; }
+
+	public int getLocalId() { return this.localId; }
+	public void setLocalId(int localId) { this.localId = localId; }
+
+	public int getTipoId() { return this.tipoId; }
+	public void setTipoId(int tipoId) { this.tipoId = tipoId; }
+
+	public Date getData() { return this.data; }
+	public void setData(Date data) { this.data = data; }
 }

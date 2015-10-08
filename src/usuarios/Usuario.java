@@ -34,18 +34,23 @@ public class Usuario {
 	private String local;
 	private Date data;
 
-	public String GetLocal() { return this.local; }
-	public void SetLocal(String local) { this.local = local; }
-
-	public Date GetData() { return this.data; }
-	public void SetData(Date data) { this.data = data; }
-
-	public void EscolherLocalEData(String local, Date data) {
-		SetLocal(local);
-		SetData(data);
+	public Usuario(String local, Date data) {
+		setLocal(local);
+		setData(data);
 	}
 
-	public void EscolherEvento(Evento evento) {
+	public String getLocal() { return this.local; }
+	public void setLocal(String local) { this.local = local; }
+
+	public Date getData() { return this.data; }
+	public void setData(Date data) { this.data = data; }
+
+	public void escolherLocalEData(String local, Date data) {
+		setLocal(local);
+		setData(data);
+	}
+
+	public void escolherEvento(Evento evento) {
 		// TODO: Adicionar evento na rota
 	}
 
