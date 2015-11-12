@@ -56,12 +56,13 @@ public class EventoDAO {
 	}
 
 	public void insert(Evento evento) {
-		String cmd = "insert into eventos(localid, tipoid, data) values(?, ?, ?)";
+		String cmd = "insert into eventos(nome, localid, tipoid, data) values(?, ?, ?, ?)";
 		try (PreparedStatement stmt = conn.prepareStatement(cmd, Statement.RETURN_GENERATED_KEYS)) {
 			
-			stmt.setInt(1, evento.getLocalId());
-			stmt.setInt(2, evento.getTipoId());
-			stmt.setString(3, dateFormat.format(evento.getData()));
+                        stmt.setString(1, evento.getNome());
+			stmt.setInt(2, evento.getLocalId());
+			stmt.setInt(3, evento.getTipoId());
+			stmt.setString(4, dateFormat.format(evento.getData()));
                         
 			stmt.executeUpdate();
 
@@ -74,16 +75,17 @@ public class EventoDAO {
 	}
 
 	public void update(Evento evento) {
-		String cmd = "update eventos set localid=?,tipoid=?,data=? where id=?";
+		String cmd = "update eventos set nome=?,localid=?,tipoid=?,data=? where id=?";
 		try (PreparedStatement stmt = conn.prepareStatement(cmd)) {
 			/*
 			stmt.setInt(1, evento.getLocalizacao().getId());
 			stmt.setInt(2, evento.getTipoEvento().getId());
 				*/
-			stmt.setInt(1, evento.getLocalId());
-			stmt.setInt(2, evento.getTipoId());
-			stmt.setString(3, dateFormat.format(evento.getData()));
-			stmt.setInt(4, evento.getId());
+                    stmt.setString(1, evento.getNome());
+                    stmt.setInt(2, evento.getLocalId());
+                    stmt.setInt(3, evento.getTipoId());
+                    stmt.setString(4, dateFormat.format(evento.getData()));
+                    stmt.setInt(5, evento.getId());
 
 			stmt.executeUpdate();
 		} catch (SQLException e) {

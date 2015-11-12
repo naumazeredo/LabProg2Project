@@ -30,21 +30,26 @@ import java.util.Date;
  * @author Naum Azeredo <naumazeredo@gmail.com>
  */
 public class Evento {
-	private int id;
-	private int localId;
-	private int tipoId;
+    private int id;
+    private int localId;
+    private int tipoId;
+    private String nome;
+    private Date data;
 
-	private Date data;
+    public int getId() { return this.id; }
+    public void setId(int id) { this.id = id; }
 
-	public int getId() { return this.id; }
-	public void setId(int id) { this.id = id; }
+    public int getLocalId() { return this.localId; }
+    public void setLocalId(int localId) { this.localId = localId; }
 
-	public int getLocalId() { return this.localId; }
-	public void setLocalId(int localId) { this.localId = localId; }
+    public int getTipoId() { return this.tipoId; }
+    public void setTipoId(int tipoId) { this.tipoId = tipoId; }
 
-	public int getTipoId() { return this.tipoId; }
-	public void setTipoId(int tipoId) { this.tipoId = tipoId; }
+    public Date getData() { return this.data; }
+    public void setData(Date data) { this.data = data; }
 
-	public Date getData() { return this.data; }
-	public void setData(Date data) { this.data = data; }
+    public String getNome() { return nome;}
+    public void setNome(String nome) {this.nome = nome;}
+        
+        
 }
