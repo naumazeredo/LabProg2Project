@@ -35,6 +35,8 @@ import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
 import java.util.ResourceBundle;
+import javafx.event.ActionEvent;
+import javafx.event.EventHandler;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
 import javafx.geometry.Insets;
@@ -56,6 +58,10 @@ public class RouteController implements Initializable {
 	//List<Localizacao> locals;
 	//List<TipoEvento> types;
 	List<Button> buttons;
+	List<List<Integer>> unreachable;
+	List<Integer> disableCount;
+	List<Boolean> selected;
+	List<Integer> route;
 
 	@FXML Text hour;
 	@FXML Line hourline;
@@ -64,7 +70,12 @@ public class RouteController implements Initializable {
 	public void BackClick() {
 	}
 
-	private double HourToPosition(int h, int m, double w) {
+	private double HourToPosition(Date date, double w) {
+		Calendar cal = Calendar.getInstance();
+		cal.setTime(date);
+		int h = cal.get(Calendar.HOUR_OF_DAY);
+		int m = cal.get(Calendar.MINUTE);
+
 		return w * (h*60+m - 8*60) / (14*60);
 	}
 
@@ -72,14 +83,103 @@ public class RouteController implements Initializable {
 		return w * (h*60+m)/(14*60);
 	}
 
+	public void ChooseEvent(int e) {
+		if (!selected.get(e)) { // Botão sendo selecionado
+			selected.set(e, true);
+			for (int i = 0; i < unreachable.get(e).size(); ++i) {
+				int index = unreachable.get(e).get(i);
+
+				//if (selected.get(index)) continue;
+
+				Button b = buttons.get(index);
+				b.setDisable(true);
+
+				disableCount.set(index, disableCount.get(index)+1);
+			}
+		} else { // Botão sendo deselecionado
+			selected.set(e, false);
+			for (int i = 0; i < unreachable.get(e).size(); ++i) {
+				int index = unreachable.get(e).get(i);
+
+				//if (selected.get(index)) continue;
+
+				disableCount.set(index, disableCount.get(index)-1);
+				if (disableCount.get(index) == 0) {
+					Button b = buttons.get(index);
+					b.setDisable(false);
+				}
+			}
+		}
+	}
+
+	public void Process() {
+		TipoEvento tipo;
+		Calendar ucal, vcal;
+
+		unreachable = new ArrayList<>();
+		disableCount = new ArrayList<>();
+		selected = new ArrayList<>();
+		route = new ArrayList<>();
+
+		for (int i = 0; i < events.size(); ++i) {
+			disableCount.add(0); 
+			selected.add(false);
+
+			List<Integer> l = new ArrayList<>();
+
+			for (int j = 0; j < events.size(); ++j) {
+				if (i == j) continue;
+
+				Evento u = events.get(i);
+				Evento v = events.get(j);
+
+				// Trocar pelo Google Maps API
+				// Adicionar na lista todos os eventos que:
+				// 1: (evento v depois do evento u)
+				//    Não é possível chegar no evento v após o término do evento u
+				// 2: (evento v antes do evento u)
+				//    Não é possível chegar no evento u após o términdo do evento v
+
+				ucal = Calendar.getInstance();
+				ucal.setTime(u.getData());
+				tipo = (new TipoEventoDAO()).getById(u.getTipoId());
+				ucal.add(Calendar.HOUR_OF_DAY, tipo.GetDuracao());
+
+				vcal = Calendar.getInstance();
+				vcal.setTime(v.getData());
+				tipo = (new TipoEventoDAO()).getById(v.getTipoId());
+				vcal.add(Calendar.HOUR_OF_DAY, tipo.GetDuracao());
+
+				if (u.getData().before(v.getData())) {
+					if (v.getData().before(ucal.getTime()))
+						l.add(j);
+				} else {
+					if (u.getData().before(vcal.getTime()))
+						l.add(j);
+				}
+			}
+
+			unreachable.add(l);
+		}
+	}
+
 	public void Render() {
 		// Layout
-		Date d = Calendar.getInstance().getTime();
-		int h = d.getHours();
-		int m = d.getMinutes();
+		Calendar cal = Calendar.getInstance();
+		Date date = cal.getTime();
+
+		// TESTE
+		/*
+		date = new Date(115, 10, 12, 8, 0);
+		cal.setTime(date);
+*/
+		// -----
+
+		int h = cal.get(Calendar.HOUR_OF_DAY);
+		int m = cal.get(Calendar.MINUTE);
 
 		double w = pane.getWidth();
-		double posx = HourToPosition(h, m, w);
+		double posx = HourToPosition(date, w);
 
 		hourline.setEndY(pane.getHeight());
 		hourline.setLayoutX(posx);
@@ -88,14 +188,18 @@ public class RouteController implements Initializable {
 		hour.setLayoutX(posx);
 
 		// Eventos
-		if (!loaded)
-			events = (new EventoDAO()).getByDay(new Date(115, 10, 12));
+		if (!loaded) {
+			events = (new EventoDAO()).getByDay(date);
+			Process();
+		}
+
+		buttons = new ArrayList<>();
 
 		List<Integer> rowTipo = new ArrayList<>();
-
 		for (int i = 0; i < events.size(); ++i) {
-			Localizacao local = (new LocalizacaoDAO()).getById(events.get(i).getLocalId());
-			TipoEvento tipo = (new TipoEventoDAO()).getById(events.get(i).getTipoId());
+			Evento evento = events.get(i);
+			Localizacao local = (new LocalizacaoDAO()).getById(evento.getLocalId());
+			TipoEvento tipo = (new TipoEventoDAO()).getById(evento.getTipoId());
 
 			int row;
 			for (row = 0; row < rowTipo.size(); ++row)
@@ -106,12 +210,28 @@ public class RouteController implements Initializable {
 				rowTipo.add(local.getId());
 
 			Button button = new Button(tipo.GetNome());
-			button.setLayoutX(HourToPosition(events.get(i).getData().getHours(), events.get(i).getData().getMinutes(), w));
-			button.setLayoutY(10 + row * 40);
 
+			//
+			if (evento.getData().before(date)) {
+				button.setDisable(true);
+				disableCount.set(i, -1);
+			}
+			//
+
+			button.setLayoutX(HourToPosition(evento.getData(), w));
+			button.setLayoutY(10 + row * 40);
 			button.setPrefWidth(IntervalToWidth(tipo.GetDuracao(), 0, w));
 
+			final int buttonIndex = i;
+			button.setOnAction(new EventHandler<ActionEvent>() {
+				@Override public void handle(ActionEvent e) {
+					ChooseEvent(buttonIndex);
+				}
+			});
+
 			pane.getChildren().add(button);
+
+			buttons.add(button);
 		}
 	}
 

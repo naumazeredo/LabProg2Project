@@ -34,8 +34,6 @@ import java.util.Date;
 import java.util.List;
 import java.util.ArrayList;
 import java.text.SimpleDateFormat;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 
 import server.FabricaConexoes;
 
@@ -108,7 +106,7 @@ public class EventoDAO {
 	public List<Evento> getByDay(Date dia) {
 		List<Evento> list = new ArrayList<>();
 
-		try (PreparedStatement stmt = conn.prepareStatement("select * from eventos where data>=? and data<=?")) {
+		try (PreparedStatement stmt = conn.prepareStatement("select * from eventos where data>=? and data<=? order by data asc")) {
 			SimpleDateFormat dayFormat = new SimpleDateFormat("yyyy-MM-dd");
 			String begin = dayFormat.format(dia) + " 00:00:00";
 			String end   = dayFormat.format(dia) + " 23:59:59";
@@ -129,7 +127,7 @@ public class EventoDAO {
 		} catch (SQLException e) {
 			// TODO
 		} catch (ParseException ex) {
-			//Logger.getLogger(EventoDAO.class.getName()).log(Level.SEVERE, null, ex);
+			//
 		}
 
 		return list;
