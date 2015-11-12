@@ -1,7 +1,7 @@
 /*
  * The MIT License
  *
- * Copyright 2015 Naum Azeredo <naumazeredo@gmail.com>.
+ * Copyright 2015 naum.
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -21,26 +21,33 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
  * THE SOFTWARE.
  */
-package server;
+package gui;
 
-import java.sql.*;
+import javafx.scene.control.TextField;
+import java.net.URL;
+import java.util.ResourceBundle;
+import javafx.fxml.FXML;
+import javafx.fxml.Initializable;
+import javafx.scene.control.DatePicker;
 
 /**
+ * FXML Controller class
  *
- * @author Naum Azeredo <naumazeredo@gmail.com>
+ * @author naum
  */
-public class FabricaConexoes {
-	static final String JDBC_DRIVER = "com.mysql.jdbc.Driver";
-	static final String DB_URL = "jdbc:mysql://localhost:3306/labprog2";
+public class PilotController implements Initializable {
+     
+    @FXML
+    TextField location;
+    @FXML
+    DatePicker date;
 
-	static final String USER = "root";
-	static final String PASS = "";
-
-	public Connection getConnection() {
-		try {
-			return DriverManager.getConnection(DB_URL, USER, PASS);
-		} catch (SQLException e) {
-			throw new RuntimeException(e);
-		}
-	}
+    @FXML
+    public void Search() {
+    }
+    
+    @Override
+    public void initialize(URL url, ResourceBundle rb) {
+        // TODO
+    }    
 }

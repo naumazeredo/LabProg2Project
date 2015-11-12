@@ -1,7 +1,7 @@
 /*
  * The MIT License
  *
- * Copyright 2015 Naum Azeredo <naumazeredo@gmail.com>.
+ * Copyright 2015 narcelio.
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -23,61 +23,57 @@
  */
 package dao;
 
-import eventos.Evento;
+
+import eventos.TipoEvento;
 import java.sql.*;
-import java.util.List;
-import java.util.ArrayList;
 import java.text.SimpleDateFormat;
+import java.util.ArrayList;
+import java.util.List;
 
 import server.FabricaConexoes;
 
 /**
  *
- * @author Naum Azeredo <naumazeredo@gmail.com>
+ * @author narcelio
  */
-public class EventoDAO {
-	private final Connection conn;
+public class TipoEventoDAO {
+    private final Connection conn;
 
-	private final SimpleDateFormat dateFormat;
+    private final SimpleDateFormat dateFormat;
 
-	public EventoDAO() {
-		this.conn = new FabricaConexoes().getConnection();
-		dateFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+    public TipoEventoDAO() {
+            this.conn = new FabricaConexoes().getConnection();
+            dateFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
 	}
 
-	public Evento create() {
-		return new Evento();
+	public TipoEvento create() {
+		return new TipoEvento();
 	}
 
-	public void insert(Evento evento) {
-		String cmd = "insert into eventos(localid, tipoid, data) values(?, ?, ?)";
+	public void insert(TipoEvento tipoevento) {
+		String cmd = "insert into tiposevento (nome, duracao) values(?, ?)";
 		try (PreparedStatement stmt = conn.prepareStatement(cmd, Statement.RETURN_GENERATED_KEYS)) {
 			
-			stmt.setInt(1, evento.getLocalId());
-			stmt.setInt(2, evento.getTipoId());
-			stmt.setString(3, dateFormat.format(evento.getData()));
+			stmt.setString(1, tipoevento.GetNome());
+			stmt.setInt(2, tipoevento.GetDuracao()); 
                         
 			stmt.executeUpdate();
 
 			ResultSet generatedKeys = stmt.getGeneratedKeys();
 			if (generatedKeys.next())
-				evento.setId(generatedKeys.getInt(1));
+				tipoevento.setId(generatedKeys.getInt(1));
 		} catch (SQLException e) {
 			System.out.println("Erro1 " + e);
 		}
 	}
 
-	public void update(Evento evento) {
-		String cmd = "update eventos set localid=?,tipoid=?,data=? where id=?";
+	public void update(TipoEvento tipoevento) {
+		String cmd = "update tiposevento set nome=?, duracao=? where id=?";
 		try (PreparedStatement stmt = conn.prepareStatement(cmd)) {
-			/*
-			stmt.setInt(1, evento.getLocalizacao().getId());
-			stmt.setInt(2, evento.getTipoEvento().getId());
-				*/
-			stmt.setInt(1, evento.getLocalId());
-			stmt.setInt(2, evento.getTipoId());
-			stmt.setString(3, dateFormat.format(evento.getData()));
-			stmt.setInt(4, evento.getId());
+			
+			stmt.setString(1, tipoevento.GetNome());
+			stmt.setObject(2, tipoevento.GetDuracao()); 
+			stmt.setInt(3, tipoevento.getId());
 
 			stmt.executeUpdate();
 		} catch (SQLException e) {
@@ -85,35 +81,30 @@ public class EventoDAO {
 		}
 	}
 
-	public void delete(Evento evento) {
-		String cmd = "delete from eventos where id=?";
+	public void delete(TipoEvento tipoevento) {
+		String cmd = "delete from tiposevento where id=?";
 		try (PreparedStatement stmt = conn.prepareStatement(cmd)) {
-			stmt.setInt(1, evento.getId());
+			stmt.setInt(1, tipoevento.getId());
 
 			stmt.executeUpdate();
-			evento.setId(0);
+			tipoevento.setId(0);
 		} catch (SQLException e) {
 			// TODO
 		}
 	}
+    public List<TipoEvento> getById(int tipoid){
+            List<TipoEvento> list = new ArrayList<>();
 
-	public List<Evento> getByDay(Date dia) {
-		List<Evento> list = new ArrayList<>();
-
-		try (PreparedStatement stmt = conn.prepareStatement("select id,localid,tipoid,data from eventos where data>=? and data<=?")) {
-			SimpleDateFormat dayFormat = new SimpleDateFormat("yyyy-MM-dd");
-			String begin = dayFormat.format(dia) + " 00:00:00";
-			String end   = dayFormat.format(dia) + " 23:59:59";
-
-			stmt.setString(1, begin);
-			stmt.setString(2, end);
+		try (PreparedStatement stmt = conn.prepareStatement("select id, nome, duracao from tiposevento where id = ?")) {
+			
+			stmt.setInt(1, tipoid);
 
 			ResultSet rs = stmt.executeQuery();
 			while (rs.next()) {
-				Evento e = new Evento();
+				TipoEvento e = new TipoEvento();
 				e.setId(rs.getInt("id"));
-				e.setLocalId(rs.getInt("localid"));
-				e.setTipoId(rs.getInt("tipoid"));
+				e.SetNome(rs.getString("nome"));
+				e.SetDuracao(rs.getInt("duracao"));
 
 				list.add(e);
 			}
@@ -122,5 +113,5 @@ public class EventoDAO {
 		}
 
 		return list;
-	}
+        }
 }
