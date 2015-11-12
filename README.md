@@ -39,6 +39,7 @@ Download do NetBeans 8.0.2 (Java EE): https://netbeans.org/downloads/
     -> primary key (id));
   mysql> create table eventos (
     -> id int not null auto_increment,
+    -> nome varchar(255) not null,
     -> localid int not null,
     -> tipoid int not null,
     -> data varchar(20) not null,
