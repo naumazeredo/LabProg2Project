@@ -205,8 +205,10 @@ public class RouteController implements Initializable {
 		Date date = cal.getTime();
 
 		// TESTE
+        /*
 		date = new Date(115, 10, 12, 8, 0);
 		cal.setTime(date);
+        */
 		// -----
 
 		int h = cal.get(Calendar.HOUR_OF_DAY);
@@ -247,12 +249,10 @@ public class RouteController implements Initializable {
 			Button button = new Button(tipo.GetNome() + " - " + evento.getNome());
 
 			//
-            /*
 			if (evento.getData().before(date)) {
 				button.setDisable(true);
 				disableCount.set(i, -1);
 			}
-*/
 			//
             Rectangle size = new Rectangle(
                     HourToPosition(evento.getData(), w),
