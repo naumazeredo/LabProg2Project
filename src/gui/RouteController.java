@@ -222,10 +222,10 @@ public class RouteController implements Initializable {
 		hour.setLayoutX(posx);
 
 		// Eventos
-		if (!loaded) {
+		//if (!loaded) {
 			events = (new EventoDAO()).getByDay(date);
 			Process();
-		}
+		//}
 
 		buttons = new ArrayList<>();
         buttonSizes = new ArrayList<>();
@@ -242,9 +242,9 @@ public class RouteController implements Initializable {
 					break;
 
 			if (row == rowTipo.size())
-				rowTipo.add(local.getId());
+				rowTipo.add(tipo.getId());
 
-			Button button = new Button(tipo.GetNome());
+			Button button = new Button(tipo.GetNome() + " - " + evento.getNome());
 
 			//
             /*

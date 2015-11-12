@@ -39,7 +39,8 @@ public class JavaFXApplication extends Application {
 	 * @param args the command line arguments
 	 */
 	public static void main(String[] args) {
-		//launch(args);
+		launch(args);
+        /*
         EventoDAO evento = new EventoDAO();
         Evento evento0 = evento.create();
         Evento evento1 = evento.create();
@@ -101,6 +102,7 @@ public class JavaFXApplication extends Application {
         evento.insert(evento1);
         evento.insert(evento2);
         evento.insert(evento3);
+*/
         
 	}
 	

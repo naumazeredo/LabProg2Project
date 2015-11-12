@@ -59,7 +59,7 @@ public class EventoDAO {
 		String cmd = "insert into eventos(nome, localid, tipoid, data) values(?, ?, ?, ?)";
 		try (PreparedStatement stmt = conn.prepareStatement(cmd, Statement.RETURN_GENERATED_KEYS)) {
 			
-                        stmt.setString(1, evento.getNome());
+            stmt.setString(1, evento.getNome());
 			stmt.setInt(2, evento.getLocalId());
 			stmt.setInt(3, evento.getTipoId());
 			stmt.setString(4, dateFormat.format(evento.getData()));
@@ -119,6 +119,7 @@ public class EventoDAO {
 			ResultSet rs = stmt.executeQuery();
 			while (rs.next()) {
 				Evento e = new Evento();
+                e.setNome(rs.getString("nome"));
 				e.setId(rs.getInt("id"));
 				e.setLocalId(rs.getInt("localid"));
 				e.setTipoId(rs.getInt("tipoid"));
@@ -126,11 +127,10 @@ public class EventoDAO {
 
 				list.add(e);
 			}
-		} catch (SQLException e) {
+		} catch (SQLException | ParseException e) {
 			// TODO
-		} catch (ParseException ex) {
-			//
 		}
+        //
 
 		return list;
 	}
