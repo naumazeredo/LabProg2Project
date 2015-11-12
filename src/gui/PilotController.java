@@ -25,10 +25,15 @@ package gui;
 
 import javafx.scene.control.TextField;
 import java.net.URL;
+import java.time.LocalDate;
+import java.time.ZoneId;
+import java.util.Date;
 import java.util.ResourceBundle;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
+import javafx.scene.Scene;
 import javafx.scene.control.DatePicker;
+import javafx.stage.Stage;
 
 /**
  * FXML Controller class
@@ -36,18 +41,33 @@ import javafx.scene.control.DatePicker;
  * @author naum
  */
 public class PilotController implements Initializable {
-     
+    private Stage stage;
+    private Scene routescene;
+    private RouteController routecontroller;
+    
     @FXML
-    TextField location;
+            TextField location;
     @FXML
-    DatePicker date;
-
+            DatePicker date;
+    
     @FXML
     public void Search() {
+        if (location.getText().length() == 0) return;
+        if (date.getValue() == null) return;
+        
+        stage.setScene(routescene);
+        
+        routecontroller.Setup(location.getText(), Date.from(date.getValue().atStartOfDay(ZoneId.systemDefault()).toInstant()));
+    }
+    
+    public void SetRouteScene(Stage stage, Scene routescene, RouteController routecontroller) {
+        this.stage = stage;
+        this.routescene = routescene;
+        this.routecontroller = routecontroller;
     }
     
     @Override
     public void initialize(URL url, ResourceBundle rb) {
-        // TODO
-    }    
+        date.setValue(LocalDate.now());
+    }
 }

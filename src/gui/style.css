@@ -4,8 +4,19 @@
     -fx-background-color: #eee;
 }
 
+.button:hover {
+    -fx-background-color: #ddd;
+}
+
+.button:disabled {
+    -fx-opacity: 0.3;
+}
+
 .button-selected {
     -fx-text-fill: #4f8a10;
     -fx-background-color: #dff2bf;
     -fx-border-color: #4f8a10;
+}
+.button-selected:hover {
+    -fx-background-color: #cee1ae;
 }
