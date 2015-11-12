@@ -10,11 +10,13 @@
 <?import javafx.scene.layout.*?>
 
 <AnchorPane id="AnchorPane" prefHeight="400.0" prefWidth="600.0" styleClass="mainFxmlClass" xmlns="http://javafx.com/javafx/8" xmlns:fx="http://javafx.com/fxml/1" fx:controller="gui.RouteController">
+    <stylesheets>
+        <URL value="@style.css"/>
+    </stylesheets>
    <children>
       <Pane fx:id="pane" layoutX="24.0" layoutY="142.0" prefHeight="289.0" prefWidth="560.0" style="-fx-background-color: #eef;" AnchorPane.bottomAnchor="20.0" AnchorPane.leftAnchor="20.0" AnchorPane.rightAnchor="20.0" AnchorPane.topAnchor="90.0">
          <children>
             <Line fx:id="hourline" endY="289.0" layoutX="123.0" />
-            <CubicCurve controlX1="100.0" controlY2="100.0" endX="100.0" endY="100.0" fill="#1f93ff00" layoutX="297.0" layoutY="123.0" stroke="BLACK" />
          </children>
       </Pane>
       <Text layoutX="259.0" layoutY="39.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Olimpíadas">

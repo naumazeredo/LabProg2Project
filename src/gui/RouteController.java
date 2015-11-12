@@ -32,6 +32,7 @@ import eventos.TipoEvento;
 import java.net.URL;
 import java.util.ArrayList;
 import java.util.Calendar;
+import java.util.Collections;
 import java.util.Date;
 import java.util.List;
 import java.util.ResourceBundle;
@@ -39,10 +40,12 @@ import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
-import javafx.geometry.Insets;
 import javafx.scene.control.Button;
 import javafx.scene.layout.Pane;
+import javafx.scene.paint.Color;
+import javafx.scene.shape.CubicCurve;
 import javafx.scene.shape.Line;
+import javafx.scene.shape.Rectangle;
 import javafx.scene.text.Text;
 
 /**
@@ -57,11 +60,16 @@ public class RouteController implements Initializable {
 	List<Evento> events;
 	//List<Localizacao> locals;
 	//List<TipoEvento> types;
+
 	List<Button> buttons;
+	List<Rectangle> buttonSizes;
+
 	List<List<Integer>> unreachable;
 	List<Integer> disableCount;
 	List<Boolean> selected;
+
 	List<Integer> route;
+    List<CubicCurve> routeLines;
 
 	@FXML Text hour;
 	@FXML Line hourline;
@@ -86,10 +94,13 @@ public class RouteController implements Initializable {
 	public void ChooseEvent(int e) {
 		if (!selected.get(e)) { // Botão sendo selecionado
 			selected.set(e, true);
+            buttons.get(e).getStyleClass().add("button-selected");
+
+            route.add(e);
+            Collections.sort(route);
+
 			for (int i = 0; i < unreachable.get(e).size(); ++i) {
 				int index = unreachable.get(e).get(i);
-
-				//if (selected.get(index)) continue;
 
 				Button b = buttons.get(index);
 				b.setDisable(true);
@@ -98,10 +109,11 @@ public class RouteController implements Initializable {
 			}
 		} else { // Botão sendo deselecionado
 			selected.set(e, false);
+            buttons.get(e).getStyleClass().remove("button-selected");
+            route.remove(new Integer(e));
+
 			for (int i = 0; i < unreachable.get(e).size(); ++i) {
 				int index = unreachable.get(e).get(i);
-
-				//if (selected.get(index)) continue;
 
 				disableCount.set(index, disableCount.get(index)-1);
 				if (disableCount.get(index) == 0) {
@@ -110,6 +122,29 @@ public class RouteController implements Initializable {
 				}
 			}
 		}
+
+        // Update route lines
+        for (int i = 0; i < routeLines.size(); ++i) {
+            pane.getChildren().remove(routeLines.get(i));
+        }
+
+        routeLines = new ArrayList<>();
+        for (int i = 1; i < route.size(); ++i) {
+            int u = route.get(i-1);
+            int v = route.get(i);
+            double ax = buttonSizes.get(u).getX() + buttonSizes.get(u).getWidth();
+            double ay = buttonSizes.get(u).getY() + buttonSizes.get(u).getHeight()/2;
+            double bx = buttonSizes.get(v).getX();
+            double by = buttonSizes.get(v).getY() + buttonSizes.get(v).getHeight()/2;
+
+            CubicCurve c = new CubicCurve(ax, ay, bx, ay, ax, by, bx, by);
+            c.setFill(Color.TRANSPARENT);
+            c.setStrokeWidth(1);
+            c.setStroke(Color.BLACK);
+
+            pane.getChildren().add(c);
+            routeLines.add(c);
+        }
 	}
 
 	public void Process() {
@@ -120,6 +155,7 @@ public class RouteController implements Initializable {
 		disableCount = new ArrayList<>();
 		selected = new ArrayList<>();
 		route = new ArrayList<>();
+        routeLines = new ArrayList<>();
 
 		for (int i = 0; i < events.size(); ++i) {
 			disableCount.add(0); 
@@ -169,10 +205,8 @@ public class RouteController implements Initializable {
 		Date date = cal.getTime();
 
 		// TESTE
-		/*
 		date = new Date(115, 10, 12, 8, 0);
 		cal.setTime(date);
-*/
 		// -----
 
 		int h = cal.get(Calendar.HOUR_OF_DAY);
@@ -194,6 +228,7 @@ public class RouteController implements Initializable {
 		}
 
 		buttons = new ArrayList<>();
+        buttonSizes = new ArrayList<>();
 
 		List<Integer> rowTipo = new ArrayList<>();
 		for (int i = 0; i < events.size(); ++i) {
@@ -212,15 +247,24 @@ public class RouteController implements Initializable {
 			Button button = new Button(tipo.GetNome());
 
 			//
+            /*
 			if (evento.getData().before(date)) {
 				button.setDisable(true);
 				disableCount.set(i, -1);
 			}
+*/
 			//
+            Rectangle size = new Rectangle(
+                    HourToPosition(evento.getData(), w),
+                    10 + row * 40,
+                    IntervalToWidth(tipo.GetDuracao(), 0, w),
+                    20
+            );
+            buttonSizes.add(size);
 
-			button.setLayoutX(HourToPosition(evento.getData(), w));
-			button.setLayoutY(10 + row * 40);
-			button.setPrefWidth(IntervalToWidth(tipo.GetDuracao(), 0, w));
+			button.setLayoutX(size.getX());
+			button.setLayoutY(size.getY());
+			button.setPrefWidth(size.getWidth());
 
 			final int buttonIndex = i;
 			button.setOnAction(new EventHandler<ActionEvent>() {

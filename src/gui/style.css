@@ -1,0 +1,11 @@
+.button {
+    -fx-border-style: solid;
+    -fx-border-radius: 4;
+    -fx-background-color: #eee;
+}
+
+.button-selected {
+    -fx-text-fill: #4f8a10;
+    -fx-background-color: #dff2bf;
+    -fx-border-color: #4f8a10;
+}
