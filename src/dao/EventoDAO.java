@@ -24,10 +24,18 @@
 package dao;
 
 import eventos.Evento;
-import java.sql.*;
+import java.sql.Connection;
+import java.sql.PreparedStatement;
+import java.sql.ResultSet;
+import java.sql.SQLException;
+import java.sql.Statement;
+import java.text.ParseException;
+import java.util.Date;
 import java.util.List;
 import java.util.ArrayList;
 import java.text.SimpleDateFormat;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 import server.FabricaConexoes;
 
@@ -100,7 +108,7 @@ public class EventoDAO {
 	public List<Evento> getByDay(Date dia) {
 		List<Evento> list = new ArrayList<>();
 
-		try (PreparedStatement stmt = conn.prepareStatement("select id,localid,tipoid,data from eventos where data>=? and data<=?")) {
+		try (PreparedStatement stmt = conn.prepareStatement("select * from eventos where data>=? and data<=?")) {
 			SimpleDateFormat dayFormat = new SimpleDateFormat("yyyy-MM-dd");
 			String begin = dayFormat.format(dia) + " 00:00:00";
 			String end   = dayFormat.format(dia) + " 23:59:59";
@@ -114,11 +122,14 @@ public class EventoDAO {
 				e.setId(rs.getInt("id"));
 				e.setLocalId(rs.getInt("localid"));
 				e.setTipoId(rs.getInt("tipoid"));
+				e.setData(dateFormat.parse(rs.getString("data")));
 
 				list.add(e);
 			}
 		} catch (SQLException e) {
 			// TODO
+		} catch (ParseException ex) {
+			//Logger.getLogger(EventoDAO.class.getName()).log(Level.SEVERE, null, ex);
 		}
 
 		return list;

@@ -23,7 +23,12 @@
  */
 package gui;
 
+import dao.EventoDAO;
+import dao.LocalizacaoDAO;
+import dao.TipoEventoDAO;
 import eventos.Evento;
+import eventos.Localizacao;
+import eventos.TipoEvento;
 import java.net.URL;
 import java.util.ArrayList;
 import java.util.Calendar;
@@ -32,6 +37,7 @@ import java.util.List;
 import java.util.ResourceBundle;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
+import javafx.geometry.Insets;
 import javafx.scene.control.Button;
 import javafx.scene.layout.Pane;
 import javafx.scene.shape.Line;
@@ -47,6 +53,8 @@ public class RouteController implements Initializable {
 	boolean loaded = false;
 
 	List<Evento> events;
+	//List<Localizacao> locals;
+	//List<TipoEvento> types;
 	List<Button> buttons;
 
 	@FXML Text hour;
@@ -58,6 +66,10 @@ public class RouteController implements Initializable {
 
 	private double HourToPosition(int h, int m, double w) {
 		return w * (h*60+m - 8*60) / (14*60);
+	}
+
+	private double IntervalToWidth(int h, int m, double w) {
+		return w * (h*60+m)/(14*60);
 	}
 
 	public void Render() {
@@ -76,26 +88,29 @@ public class RouteController implements Initializable {
 		hour.setLayoutX(posx);
 
 		// Eventos
-		if (!loaded) {
-			events = new ArrayList<>();
+		if (!loaded)
+			events = (new EventoDAO()).getByDay(new Date(115, 10, 12));
 
-			events.add(new Evento());
-			Evento event = events.get(events.size()-1);
-			event.setData(new Date(2015,11,11,16,40));
-			//event.setLocalId();
-
-			/*
-			events.add(new Evento());
-			event = events.get(events.size()-1);
-			event.setData(new Date(2015,11,11,12,40));
-			*/
-		}
+		List<Integer> rowTipo = new ArrayList<>();
 
 		for (int i = 0; i < events.size(); ++i) {
-			Button button = new Button("butt");
+			Localizacao local = (new LocalizacaoDAO()).getById(events.get(i).getLocalId());
+			TipoEvento tipo = (new TipoEventoDAO()).getById(events.get(i).getTipoId());
+
+			int row;
+			for (row = 0; row < rowTipo.size(); ++row)
+				if (rowTipo.get(row) == tipo.getId())
+					break;
+
+			if (row == rowTipo.size())
+				rowTipo.add(local.getId());
+
+			Button button = new Button(tipo.GetNome());
 			button.setLayoutX(HourToPosition(events.get(i).getData().getHours(), events.get(i).getData().getMinutes(), w));
-			button.setLayoutY(10);
-			button.resize(20, 20);
+			button.setLayoutY(10 + row * 40);
+
+			button.setPrefWidth(IntervalToWidth(tipo.GetDuracao(), 0, w));
+
 			pane.getChildren().add(button);
 		}
 	}

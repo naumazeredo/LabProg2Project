@@ -92,26 +92,25 @@ public class TipoEventoDAO {
 			// TODO
 		}
 	}
-    public List<TipoEvento> getById(int tipoid){
-            List<TipoEvento> list = new ArrayList<>();
 
+	public TipoEvento getById(int tipoid){
+		TipoEvento tipo;
 		try (PreparedStatement stmt = conn.prepareStatement("select id, nome, duracao from tiposevento where id = ?")) {
 			
 			stmt.setInt(1, tipoid);
-
+			
 			ResultSet rs = stmt.executeQuery();
-			while (rs.next()) {
-				TipoEvento e = new TipoEvento();
-				e.setId(rs.getInt("id"));
-				e.SetNome(rs.getString("nome"));
-				e.SetDuracao(rs.getInt("duracao"));
-
-				list.add(e);
+			if (rs.next()) {
+				tipo = new TipoEvento();
+				tipo.setId(rs.getInt("id"));
+				tipo.SetNome(rs.getString("nome"));
+				tipo.SetDuracao(rs.getInt("duracao"));
+				return tipo;
 			}
 		} catch (SQLException e) {
 			// TODO
 		}
-
-		return list;
-        }
+		
+		return null;
+	}
 }

@@ -82,7 +82,7 @@ public class LocalizacaoDAO {
 	}
 
 	public void delete(Localizacao localizacao) {
-		String cmd = "delete from eventos where id=?";
+		String cmd = "delete from localizacoes where id=?";
 		try (PreparedStatement stmt = conn.prepareStatement(cmd)) {
 			stmt.setInt(1, localizacao.getId());
 
@@ -93,47 +93,49 @@ public class LocalizacaoDAO {
 		}
 	}
         
-        public List<Localizacao> getByRegiao (int regiao){
-            List<Localizacao> list = new ArrayList<>();
-
-		try (PreparedStatement stmt = conn.prepareStatement("select id,local,regiao from localizacao where regiao = ?")) {
+	public List<Localizacao> getByRegiao (Regiao regiao){
+		List<Localizacao> list = new ArrayList<>();
+		
+		try (PreparedStatement stmt = conn.prepareStatement("select * from localizacoes where regiao=?")) {
 			
-			stmt.setInt(1, regiao);
-
+			stmt.setInt(1, regiao.ordinal());
+			
 			ResultSet rs = stmt.executeQuery();
 			while (rs.next()) {
 				Localizacao e = new Localizacao();
 				e.setId(rs.getInt("id"));
 				e.SetLocal(rs.getString("local"));
 				int reg = rs.getInt("regiao");
-                                e.SetRegiao(Regiao.values()[reg]);
-
+				e.SetRegiao(Regiao.values()[reg]);
+				
 				list.add(e);
 			}
 		} catch (SQLException e) {
 			// TODO
 		}
-
+		
 		return list;
-        }
-        
-        public Localizacao getById(int localid){
-            Localizacao local = new Localizacao();
-		try (PreparedStatement stmt = conn.prepareStatement("select id,local,regiao from localizacao where id = ?")) {
+	}
+	
+	public Localizacao getById(int localid){
+		Localizacao local;
+		try (PreparedStatement stmt = conn.prepareStatement("select * from localizacoes where id=?")) {
 			
 			stmt.setInt(1, localid);
-
+			
 			ResultSet rs = stmt.executeQuery();
-			while (rs.next()) {	
-                            local.setId(rs.getInt("id"));
-                            local.SetLocal(rs.getString("local"));
-                            int reg = rs.getInt("regiao");
-                            local.SetRegiao(Regiao.values()[reg]);
+			if (rs.next()) {
+				local = new Localizacao();
+				local.setId(rs.getInt("id"));
+				local.SetLocal(rs.getString("local"));
+				int reg = rs.getInt("regiao");
+				local.SetRegiao(Regiao.values()[reg]);
+				return local;
 			}
 		} catch (SQLException e) {
 			// TODO
 		}
 
-		return local;
-        }
+		return null;
+	}
 }
