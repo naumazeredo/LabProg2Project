@@ -22,7 +22,7 @@
  * THE SOFTWARE.
  */
 package dao;
-import master_of_vim;
+
 import eventos.Evento;
 import java.sql.*;
 import java.util.List;
