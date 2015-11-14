@@ -50,6 +50,10 @@ import javafx.scene.shape.Rectangle;
 import javafx.scene.text.Text;
 import javafx.stage.Stage;
 
+import javafx.scene.control.Tooltip;
+import javafx.scene.control.Button;
+
+
 /**
  * FXML Controller class
  *
@@ -275,7 +279,11 @@ public class RouteController implements Initializable {
             if (row == rowTipo.size())
                 rowTipo.add(tipo.getId());
             
-            Button button = new Button(tipo.GetNome() + " - " + evento.getNome());
+            Button button = new Button(tipo.GetNome());
+           
+            button.setTooltip(new Tooltip(tipo.GetNome() + " - " + evento.getNome()));
+
+            
             
             // Google Maps API
             // Desativar eventos que não poder chegar dado a localização atual e a hora
