@@ -198,12 +198,12 @@ public class RouteController implements Initializable {
                 ucal = Calendar.getInstance();
                 ucal.setTime(u.getData());
                 tipo = (new TipoEventoDAO()).getById(u.getTipoId());
-                ucal.add(Calendar.HOUR_OF_DAY, tipo.GetDuracao());
+                ucal.add(Calendar.MINUTE, tipo.GetDuracao());
                 
                 vcal = Calendar.getInstance();
                 vcal.setTime(v.getData());
                 tipo = (new TipoEventoDAO()).getById(v.getTipoId());
-                vcal.add(Calendar.HOUR_OF_DAY, tipo.GetDuracao());
+                vcal.add(Calendar.MINUTE, tipo.GetDuracao());
                 
                 if (u.getData().before(v.getData())) {
                     if (v.getData().before(ucal.getTime()))
@@ -291,7 +291,7 @@ public class RouteController implements Initializable {
             Rectangle size = new Rectangle(
                     HourToPosition(evento.getData(), w),
                     10 + row * 40,
-                    IntervalToWidth(tipo.GetDuracao(), 0, w),
+                    IntervalToWidth(0, tipo.GetDuracao(), w),
                     20
             );
             buttonSizes.add(size);
