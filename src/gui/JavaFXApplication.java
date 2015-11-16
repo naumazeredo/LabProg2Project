@@ -29,8 +29,14 @@ public class JavaFXApplication extends Application {
         Scene pilotscene = new Scene(root);
         PilotController pilotcontroller = (PilotController)pilotloader.getController();
         
+        FXMLLoader maploader = new FXMLLoader(getClass().getResource("Map.fxml"));
+        root = (Parent)maploader.load();
+        Scene mapscene = new Scene(root);
+        MapController mapcontroller = (MapController)maploader.getController();
+        
         pilotcontroller.SetRouteScene(stage, routescene, routecontroller);
         routecontroller.SetPilotScene(stage, pilotscene, pilotcontroller);
+        routecontroller.SetMapScene(stage, mapscene, mapcontroller);
         
         stage.setTitle("Olimpíadas");
         stage.setScene(pilotscene);

@@ -72,7 +72,9 @@ public class Googletest {
         return (i/60);
         
     }
-    
+    public String getCoord(int a){
+        return s.get(a).getCoordenada();
+    } 
     
     public void intance () throws IOException, JSONException{
         Vertex s1 = new Vertex("22°51'53.1\"S43°23'59.2\"W");

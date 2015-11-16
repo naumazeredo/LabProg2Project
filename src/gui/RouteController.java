@@ -66,6 +66,9 @@ public class RouteController implements Initializable {
     private Scene pilotscene;
     private PilotController pilotcontroller;
     private final Maps.Googletest dist;
+    private Scene mapscene;
+    private MapController mapcontroller;
+    private String userLocal;
     
     boolean loaded = false;
     
@@ -97,11 +100,19 @@ public class RouteController implements Initializable {
     public void BackClick() throws Exception {
         GoToPilotPage();
     }
+    public void ListClick() throws Exception {
+       GoToMapScene();
+    }
     
     public void SetPilotScene(Stage stage, Scene pilotscene, PilotController pilotcontroller) {
         this.stage = stage;
         this.pilotscene = pilotscene;
         this.pilotcontroller = pilotcontroller;
+    }
+    public void SetMapScene(Stage stage, Scene scene, MapController controller) {
+        this.stage = stage;
+        this.mapscene = scene;
+        this.mapcontroller = controller;
     }
     
     public void GoToPilotPage() throws Exception {
@@ -110,7 +121,17 @@ public class RouteController implements Initializable {
         //Scene scene = new Scene(root);
         stage.setScene(pilotscene);
     }
-    
+    public void GoToMapScene() throws Exception {
+        //FXMLLoader loader = new FXMLLoader(getClass().getResource("Pilot.fxml"));
+        //Parent root = (Parent)loader.load();
+        //Scene scene = new Scene(root);
+        List<Integer> listaLocais = new ArrayList<>();
+        for (int i=0; i<route.size();i++){
+            listaLocais.add(events.get(route.get(i)).getLocalId());
+        }
+        stage.setScene(mapscene);
+        mapcontroller.Setup(listaLocais, userLocal, dist);
+    }
     private double HourToPosition(Date date, double w) {
         Calendar cal = Calendar.getInstance();
         cal.setTime(date);
@@ -245,6 +266,7 @@ public class RouteController implements Initializable {
         Calendar cal = Calendar.getInstance();
         cal.setTime(date);
         Vertex user = new Vertex(localizacao);
+        userLocal = localizacao;
         
         Calendar today = Calendar.getInstance();
         boolean isToday = false;
