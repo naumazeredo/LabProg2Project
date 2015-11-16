@@ -52,6 +52,9 @@ import javafx.stage.Stage;
 
 import javafx.scene.control.Tooltip;
 import javafx.scene.control.Button;
+import Maps.*;
+import java.io.IOException;
+import org.json.JSONException;
 
 
 /**
@@ -63,6 +66,7 @@ public class RouteController implements Initializable {
     private Stage stage;
     private Scene pilotscene;
     private PilotController pilotcontroller;
+    private final Maps.Googletest dist;
     
     boolean loaded = false;
     
@@ -83,6 +87,10 @@ public class RouteController implements Initializable {
     @FXML Text hour;
     @FXML Line hourline;
     @FXML Pane pane;
+    
+    public RouteController() throws IOException, JSONException{
+        dist = new Maps.Googletest();
+    }
     
     public void BackClick() throws Exception {
         GoToPilotPage();
@@ -170,7 +178,7 @@ public class RouteController implements Initializable {
         }
     }
     
-    public void Process() {
+    public void Process() throws IOException, JSONException {
         TipoEvento tipo;
         Calendar ucal, vcal;
         
@@ -188,26 +196,27 @@ public class RouteController implements Initializable {
             
             for (int j = 0; j < events.size(); ++j) {
                 if (i == j) continue;
-                
+                int a,b,c =0;
                 Evento u = events.get(i);
                 Evento v = events.get(j);
+                a=u.getLocalId();
+                b=v.getLocalId();
+               
+                if (a!=b)
+                    c=dist.execution(a, b);
                 
-                // Trocar pelo Google Maps API
-                // Adicionar na lista todos os eventos que:
-                // 1: (evento v depois do evento u)
-                //    Não é possível chegar no evento v após o término do evento u
-                // 2: (evento v antes do evento u)
-                //    Não é possível chegar no evento u após o términdo do evento v
-                
+               
                 ucal = Calendar.getInstance();
                 ucal.setTime(u.getData());
                 tipo = (new TipoEventoDAO()).getById(u.getTipoId());
                 ucal.add(Calendar.MINUTE, tipo.GetDuracao());
+                ucal.add(Calendar.MINUTE, c);
                 
                 vcal = Calendar.getInstance();
                 vcal.setTime(v.getData());
                 tipo = (new TipoEventoDAO()).getById(v.getTipoId());
                 vcal.add(Calendar.MINUTE, tipo.GetDuracao());
+                
                 
                 if (u.getData().before(v.getData())) {
                     if (v.getData().before(ucal.getTime()))
@@ -222,7 +231,7 @@ public class RouteController implements Initializable {
         }
     }
     
-    public void Setup(String localizacao, Date date) {
+    public void Setup(String localizacao, Date date) throws IOException, JSONException {
         // Layout
         Calendar cal = Calendar.getInstance();
         cal.setTime(date);
@@ -281,7 +290,7 @@ public class RouteController implements Initializable {
             
             Button button = new Button(tipo.GetNome());
            
-            button.setTooltip(new Tooltip(tipo.GetNome() + " - " + evento.getNome()));
+            button.setTooltip(new Tooltip(tipo.GetNome() + " - " + evento.getNome() + "\n" + local.GetLocal()));
 
             
             
