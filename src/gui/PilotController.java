@@ -23,6 +23,7 @@
  */
 package gui;
 
+import java.io.IOException;
 import javafx.scene.control.TextField;
 import java.net.URL;
 import java.time.LocalDate;
@@ -34,6 +35,7 @@ import javafx.fxml.Initializable;
 import javafx.scene.Scene;
 import javafx.scene.control.DatePicker;
 import javafx.stage.Stage;
+import org.json.JSONException;
 
 /**
  * FXML Controller class
@@ -51,7 +53,7 @@ public class PilotController implements Initializable {
             DatePicker date;
     
     @FXML
-    public void Search() {
+    public void Search() throws IOException, JSONException {
         if (location.getText().length() == 0) return;
         if (date.getValue() == null) return;
         
