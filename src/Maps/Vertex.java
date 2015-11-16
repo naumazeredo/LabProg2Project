@@ -23,6 +23,12 @@
  */
 package Maps;
 
+import java.io.IOException;
+import java.net.URL;
+import java.util.Scanner;
+import org.json.JSONArray;
+import org.json.JSONObject;
+
 /**
  *
  * @author narcelio
@@ -48,8 +54,8 @@ public class Vertex implements Comparable<Vertex>{
         this.Coordenada = Coordenada;
     }
 
-    public Vertex(String Coordenada, int peso, int nome) {
-        this.Coordenada = Coordenada;
+    public Vertex(String Id, int peso, int nome) {
+        this.Coordenada = Id;
         this.peso = peso;
         this.nome = nome;
     }
@@ -77,7 +83,25 @@ public class Vertex implements Comparable<Vertex>{
     public void setNome(int nome) {
         this.nome = nome;
     }
-   
+    
+//    public String getPos(String Id) throws IOException{
+//        String Coord = Id;
+//        String str;
+//        
+//        String baseUrlString = "https://maps.googleapis.com/maps/api/geocode/json?address=";
+//        String urlString = baseUrlString + "&key=";
+//        URL url = new URL(urlString);
+//        try (Scanner scan = new Scanner(url.openStream())) {
+//            str = new String();
+//            while (scan.hasNext()) {
+//                str += scan.nextLine();
+//            }
+//        }
+//        JSONObject obj = new JSONObject(str);
+//        JSONArray array = (JSONArray) obj.getJSONArray("rows");
+//        
+//        return Id;
+//    }
     
     @Override
     public String toString(){

@@ -99,7 +99,7 @@ public final class Aresta{
         methodParameters.put("destination", vq.getCoordenada().replace(" ", "+"));
         methodParameters.put("mode", "driving");
         methodParameters.put("language", "pt-BR");
-        methodParameters.put("key", "");
+        methodParameters.put("key", "AIzaSyDp_KIRxJLDui-yGF-Q32zAw41_DDopT6Q");
 
         String baseUrlString = "https://maps.googleapis.com/maps/api/distancematrix/json?";
 
@@ -135,7 +135,7 @@ public final class Aresta{
             for (int j = 0; j < elements.length(); j++) {
                 JSONObject duracao = elements.getJSONObject(j).getJSONObject("duration");
                 tempo_segundos = duracao.getInt("value");
-                //System.out.println(tempo_segundos);
+             //   System.out.println(tempo_segundos);
             }
         }
         return tempo_segundos;

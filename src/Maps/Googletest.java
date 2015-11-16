@@ -40,9 +40,11 @@ public class Googletest {
     
     public Googletest() throws IOException, JSONException{
         s.add(new Vertex("22°51'53.1\"S43°23'59.2\"W")); //s1
-        s.add(new Vertex("22°58'28.5\"S43°23'17.1\"W"));  //s2
-        s.add(new Vertex("22°59'13.5\"S43°12'21.1\"W"));  //s3
         s.add(new Vertex("22°54'44.0\"S43°13'49.3\"W")); //s4
+        s.add(new Vertex("22°59'13.5\"S43°12'21.1\"W"));  //s3
+        s.add(new Vertex("22°58'28.5\"S43°23'17.1\"W"));  //s2
+       
+        
         for(Vertex v1:s){
             for(Vertex v2:s){
                 aresta.add(new Aresta(v1,v2));
@@ -64,6 +66,13 @@ public class Googletest {
         return (i/60);
         
     }
+    public int UserExec (int a, Vertex id) throws IOException, JSONException{
+        Aresta user = new Aresta(id,s.get(a-1));
+        int i = user.getTime();
+        return (i/60);
+        
+    }
+    
     
     public void intance () throws IOException, JSONException{
         Vertex s1 = new Vertex("22°51'53.1\"S43°23'59.2\"W");

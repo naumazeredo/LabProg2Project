@@ -41,7 +41,6 @@ import javafx.event.EventHandler;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
 import javafx.scene.Scene;
-import javafx.scene.control.Button;
 import javafx.scene.layout.Pane;
 import javafx.scene.paint.Color;
 import javafx.scene.shape.CubicCurve;
@@ -78,8 +77,11 @@ public class RouteController implements Initializable {
     List<Rectangle> buttonSizes;
     
     List<List<Integer>> unreachable;
+    //List<List<Integer>> unreachable2;
+    
     List<Integer> disableCount;
     List<Boolean> selected;
+    //List<Boolean> selected2;
     
     List<Integer> route;
     List<CubicCurve> routeLines;
@@ -231,10 +233,18 @@ public class RouteController implements Initializable {
         }
     }
     
+    /**
+     *
+     * @param localizacao
+     * @param date
+     * @throws java.io.IOException
+     * @throws org.json.JSONException
+     */
     public void Setup(String localizacao, Date date) throws IOException, JSONException {
         // Layout
         Calendar cal = Calendar.getInstance();
         cal.setTime(date);
+        Vertex user = new Vertex(localizacao);
         
         Calendar today = Calendar.getInstance();
         boolean isToday = false;
@@ -247,7 +257,7 @@ public class RouteController implements Initializable {
         
         // TESTE
         /*
-        date = new Date(115, 10, 12, 8, 0);
+        date = new Date(115, 10, 16, 11, 55);
         cal.setTime(date);
         */
         // -----
@@ -291,18 +301,44 @@ public class RouteController implements Initializable {
             Button button = new Button(tipo.GetNome());
            
             button.setTooltip(new Tooltip(tipo.GetNome() + " - " + evento.getNome() + "\n" + local.GetLocal()));
-
             
             
             // Google Maps API
             // Desativar eventos que não poder chegar dado a localização atual e a hora
             // OBS: caso a data não seja igual à atual não é para fazer isso.
             //      (usa o boolean isToday, definido no começo do método, para isso)
+            Calendar ucal2, vcal2;
+            
+            int a, c;
+            if(evento.getData().after(cal.getTime()))
+            {
+                a = evento.getLocalId();
+
+                c=dist.UserExec(a, user);
+
+                //System.out.println("Distancia entre usuario e evento("+i+"): "+c);
+
+                ucal2 = Calendar.getInstance();
+                ucal2.add(Calendar.MINUTE, c);
+
+                vcal2 = Calendar.getInstance();
+                vcal2.setTime(evento.getData());
+           
+                
+                if (vcal2.getTime().before(ucal2.getTime()))
+                {
+                    button.setDisable(true);
+                    disableCount.set(i, -1);
+                }
+            }
+            
+            
             
             // Desativa botões em horas anteriores à hora atual
             if (evento.getData().before(date)) {
                 button.setDisable(true);
                 disableCount.set(i, -1);
+               
             }
             //
             Rectangle size = new Rectangle(
